@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traductor</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f0f0f0;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        textarea {
+            width: 80%;
+            height: 100px;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        div#translation {
+            margin-top: 20px;
+            font-size: 18px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <h2>Traductor</h2>
+    <textarea id="inputText" placeholder="Ingresa el texto que quieres traducir"></textarea>
+    <br>
+    <label for="selectLanguage">Selecciona el idioma:</label>
+    <select id="selectLanguage">
+        <option value="en">Inglés</option>
+        <option value="es">Español</option>
+        <option value="de">Alemán</option>
+        <option value="fr">Francés</option>
+        <option value="it">Italiano</option>
+    </select>
+    <br>
+    <button type="button" onclick="translateText()">Traducir</button>
+    <div id="translation"></div>
+
+    <script>
+        function translateText() {
+            const inputText = document.getElementById('inputText').value;
+            const targetLanguage = document.getElementById('selectLanguage').value;
+
+            if (inputText.trim() === '') {
+                alert('Por favor, ingresa un texto para traducir.');
+                return;
+            }
+
+            const apiKey = 'TU_CLAVE_DE_API'; // Reemplaza con tu clave de API de Google Translate
+            const apiUrl = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
+
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    q: inputText,
+                    target: targetLanguage,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const translatedText = data.data.translations[0].translatedText;
+                document.getElementById('translation').innerText = `Traducción: ${translatedText}`;
+            })
+            .catch(error => {
+                console.error('Error al traducir:', error);
+            });
+        }
+    </script>
+</body>
+</html>
